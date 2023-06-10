@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.week4.dao.ArticleDAO">
+  <select id="getArticleList" resultType="com.example.week4.dto.Article">
+    SELECT A.id, C.category, title, writer, views, reg_date, edit_date  FROM article A LEFT JOIN category C ON A.category_id = C.id
+  </select>
+  <select id="getArticle" parameterType="long" resultType="com.example.week4.dto.Article">
+    SELECT A.id, C.category, title, writer, views, reg_date, edit_date, contents  FROM article A LEFT JOIN category C ON A.category_id = C.id  WHERE A.id = #{id}
+  </select>
+  <select id="getPassword" parameterType="long" resultType="String">
+    SELECT password  FROM article WHERE id = #{id}
+  </select>
+  <update id="plusView" parameterType="long">
+    UPDATE article SET views = views + 1 WHERE id = #{id}
+  </update>
+  <update id="putArticle" parameterType="com.example.week4.dto.Article">
+    UPDATE  article
+    SET     contents = #{contents},
+            title = #{title},
+            writer = #{writer}
+    WHERE   id = #{id};
+  </update>
+  <insert id="postArticle" parameterType="com.example.week4.dto.Article">
+    INSERT INTO article(category_id, title, writer, views, password, contents)
+    VALUES(#{categoryId},#{title},#{writer}, #{views}, #{password}, #{contents})
+  </insert>
+  <delete id="deleteArticle" parameterType="long">
+    DELETE Ar, Co
+    FROM article Ar INNER JOIN comment Co
+    WHERE Ar.id = #{id}
+      AND Co.article_id = #{id}
+  </delete>
+</mapper>
