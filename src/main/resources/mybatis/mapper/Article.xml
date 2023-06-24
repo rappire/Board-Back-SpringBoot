@@ -4,18 +4,32 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.week4.dao.ArticleDAO">
+  <!--  getArticleList -->
+  <!--  Article ??? ????, Article? category_id ? category? ???? ?? -->
   <select id="getArticleList" resultType="com.example.week4.dto.Article">
     SELECT A.id, C.category, title, writer, views, reg_date, edit_date  FROM article A LEFT JOIN category C ON A.category_id = C.id
   </select>
+
+  <!--  getArticle -->
+  <!--  id? ???? Article? ???? , Article? category_id ? category? ???? ?? -->
   <select id="getArticle" parameterType="long" resultType="com.example.week4.dto.Article">
     SELECT A.id, C.category, title, writer, views, reg_date, edit_date, contents  FROM article A LEFT JOIN category C ON A.category_id = C.id  WHERE A.id = #{id}
   </select>
+
+  <!--  getPassword -->
+  <!--  id? ???? Article? password? ?? -->
   <select id="getPassword" parameterType="long" resultType="String">
     SELECT password  FROM article WHERE id = #{id}
   </select>
+
+  <!--  plusView -->
+  <!--  id? ???? Article? views? 1??  -->
   <update id="plusView" parameterType="long">
     UPDATE article SET views = views + 1 WHERE id = #{id}
   </update>
+
+  <!--  putArticle -->
+  <!--  id? ???? Article? ??  -->
   <update id="putArticle" parameterType="com.example.week4.dto.Article">
     UPDATE  article
     SET     contents = #{contents},
@@ -23,14 +37,20 @@
             writer = #{writer}
     WHERE   id = #{id};
   </update>
+
+  <!--  postArticle -->
+  <!--  Article? DB? ???  -->
   <insert id="postArticle" parameterType="com.example.week4.dto.Article">
     INSERT INTO article(category_id, title, writer, views, password, contents)
     VALUES(#{categoryId},#{title},#{writer}, #{views}, #{password}, #{contents})
   </insert>
+
+  <!--  deleteArticle -->
+  <!--  id? ???? Article? Article? ?? Comment? ??  -->
   <delete id="deleteArticle" parameterType="long">
-    DELETE Ar, Co
-    FROM article Ar INNER JOIN comment Co
-    WHERE Ar.id = #{id}
-      AND Co.article_id = #{id}
+    DELETE Ar
+    FROM article Ar
+           LEFT JOIN comment Co ON Ar.id = Co.article_id
+    WHERE Ar.id = #{id} AND Co.article_id IS NULL;
   </delete>
 </mapper>
